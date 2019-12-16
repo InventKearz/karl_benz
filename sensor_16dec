@@ -1,0 +1,13 @@
+int setpoint = 0;
+int input = 0
+int output = 0;
+
+float Kp = 1.0;
+float Ki = 1.0;
+float Kd = 1.0;
+
+int computePID() {
+float error = setpoint - input;
+float delta_input = input - prevInput;
+prevInput
+}
