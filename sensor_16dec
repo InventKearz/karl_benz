@@ -1,13 +1,27 @@
-int setpoint = 0;
-int input = 0
-int output = 0;
-
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+// величины регулятора
+int setpoint = 0;   // заданная величина, которую должен поддерживать регулятор
+int input = 0;      // сигнал с датчика (например температура, которую мы регулируем)
+int output = 0;     // выход с регулятора на управляющее устройство (например величина ШИМ или угол поворота серво)
+// коэффициенты
 float Kp = 1.0;
 float Ki = 1.0;
 float Kd = 1.0;
-
+float _dt_s = 0.1; // время итерации в секундах
+// вспомогательные переменные
+int prevInput = 0;
+float integral = 0.0;
+// ПИД
+// функция расчёта выходного сигнала
 int computePID() {
-float error = setpoint - input;
-float delta_input = input - prevInput;
-prevInput
+  float error = setpoint - input;           // ошибка регулирования
+  float delta_input = input - prevInput;    // изменение входного сигнала
+  prevInput = input;
+  output = 0;
+  output += (float)error * Kp;                  // пропорционально ошибке регулирования
+  output -= (float)delta_input * Kd / _dt_s;    // дифференциальная составляющая
+  integral += (float)error * Ki * _dt_s;        // расчёт интегральной составляющей
+  output += integral;
+  output = constrain(output, 0, 255);           // ограничиваем
+  return output;
 }
